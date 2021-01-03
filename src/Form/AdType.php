@@ -13,18 +13,8 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 
-class AdType extends AbstractType
+class AdType extends ApplicationType
 {
-
-    private function getConfiguration($label, $placeholder, $options = []) {
-
-        return array_merge([
-            'label' => $label, 
-            'attr' => [
-                'placeholder' => $placeholder
-            ]
-            ], $options);
-    }
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder

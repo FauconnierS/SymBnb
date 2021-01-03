@@ -15,7 +15,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdController extends AbstractController
 {
     /**
-     * @Route("/ads", name="ad_index")
+     * @Route("/ads", name="ads_index")
      */
     public function index(AdRepository $repo ){
         
@@ -48,7 +48,8 @@ class AdController extends AbstractController
                 $image -> setAd($ad);
                 $manager -> persist($image);
             }
-
+            
+            $ad -> setAuthor($this -> getUser());
             $manager -> persist($ad);
             $manager -> flush();
 
