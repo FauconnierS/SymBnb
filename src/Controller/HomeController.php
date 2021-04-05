@@ -1,52 +1,31 @@
 <?php
 
-namespace App\Controller ;
+namespace App\Controller;
 
+use App\Repository\AdRepository;
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 
-class HomeController extends AbstractController {
+class HomeController extends AbstractController
+{
 
-    /**
-     * montre la page qui dit bonjour
-     *
-     * @Route("/hello/{prenom}/age/{age}", name="hello")
-     * @Route("/hello", name="hello_base")
-     * @Route("/hello/{prenom}", name="hello_prenom")
-     * 
-     * @return void
-     */
-    public function hello($prenom ="inconnu", $age = 0){
-        return $this -> render(
-            "hello.html.twig",
-            [
-                'title_page' => "Hello",
-                'prenom' => $prenom,
-                'age' => $age
-            ]
-        );
-    }
 
     /**
      * @Route("/", name="homepage")
      */
-    public function home () {
+    public function home(AdRepository $adRepo, UserRepository $userRepo)
+    {
 
-        $prenoms = ["Steeve" => 29, "Elodie" => 31, "Floriant" => 32];
 
-      return $this->render(
-          "home.html.twig",
-          [
-              'title_page' => "Home",
-              'title' => "Bonjour les amis !",
-              'age' => 12,
-              'tableau' => $prenoms 
-          ]
-      );
+        return $this->render(
+            "home.html.twig",
+            [
+                'ads' => $adRepo->findBestAds(3),
+                'users' => $userRepo->findBestUsers(2)
+            ]
+        );
     }
-
 }
-
-?>
