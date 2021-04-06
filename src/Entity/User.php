@@ -2,15 +2,20 @@
 
 namespace App\Entity;
 
+use App\Entity\Ad;
+use DateTimeInterface;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\Security\Core\User\UserInterface;
+use phpDocumentor\Reflection\Types\Self_;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -18,8 +23,9 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
  * @UniqueEntity(
  *      fields={"email"},
  *      message = "Cet email existe déja !")
+ * @Vich\Uploadable
  */
-class User implements UserInterface
+class User implements UserInterface, \Serializable
 {
     /**
      * @ORM\Id
@@ -47,10 +53,17 @@ class User implements UserInterface
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
-     * @Assert\Url(message = "Url non valide")
+     *@Vich\UploadableField(mapping="avatar_image", fileNameProperty="avatarName")
+     * @var File|null
      */
-    private $picture;
+    private $avatarFile;
+
+    /**
+     * @ORM\Column(type="string", nullable=true)
+     *
+     * @var string|null
+     */
+    private $avatarName;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -107,8 +120,17 @@ class User implements UserInterface
      */
     private $comments;
 
-    public function getFullName(){
-        return   $this -> firstName . " " . $this ->lastName ;
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+
+
+
+    public function getFullName()
+    {
+        return   $this->firstName . " " . $this->lastName;
     }
 
     /**
@@ -176,17 +198,35 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getPicture(): ?string
+    /**
+     *
+     * @param File|UploadedFile|null $avatarFile
+     * @return void
+     */
+    public function setAvatarFile(?File $avatarFile = null)
     {
-        return $this->picture;
+        $this->avatarFile = $avatarFile;
+
+        if (null !== $avatarFile) {
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
 
-    public function setPicture(?string $picture): self
+    public function getAvatarFile(): ?File
     {
-        $this->picture = $picture;
-
-        return $this;
+        return $this->avatarFile;
     }
+
+    public function setAvatarName(?string $avatarName)
+    {
+        $this->avatarName = $avatarName;
+    }
+
+    public function getAvatarName(): ?string
+    {
+        return $this->avatarName;
+    }
+
 
     public function getHash(): ?string
     {
@@ -266,35 +306,42 @@ class User implements UserInterface
         return $this;
     }
 
-    public function getroles(){
-        $roles = $this -> userRoles -> map(function($role){
-            return $role -> getTitle();
-        })-> toArray();
+    public function getroles()
+    {
+        $roles = $this->userRoles->map(function ($role) {
+            return $role->getTitle();
+        })->toArray();
 
-        $roles[] = "ROLE_USER"; 
+        $roles[] = "ROLE_USER";
         return $roles;
     }
 
     public function getPassword()
     {
-        return $this -> hash ;
+        return $this->hash;
     }
 
-    public function getSalt(){}
+    public function getSalt()
+    {
+    }
 
     public function getUsername()
     {
-        return $this -> email;
+        return $this->email;
     }
 
-    public function eraseCredentials(){}
-
-    public function setPasswordConfirm($passwordConfirm){
-        $this->passwordConfirm = $passwordConfirm ;
+    public function eraseCredentials()
+    {
     }
 
-    public function getPasswordConfirm(){
-        return $this->passwordConfirm ; 
+    public function setPasswordConfirm($passwordConfirm)
+    {
+        $this->passwordConfirm = $passwordConfirm;
+    }
+
+    public function getPasswordConfirm()
+    {
+        return $this->passwordConfirm;
     }
 
     /**
@@ -384,4 +431,39 @@ class User implements UserInterface
         return $this;
     }
 
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
+
+    public function serialize()
+    {
+
+        return serialize(array(
+            $this->id,
+            $this->email,
+            $this->hash,
+            $this->firstName,
+            $this->lastName
+        ));
+    }
+
+    public function unserialize($serialized)
+    {
+
+        list(
+            $this->id,
+            $this->email,
+            $this->hash,
+            $this->firstName,
+            $this->lastName,
+        ) = unserialize($serialized);
+    }
 }

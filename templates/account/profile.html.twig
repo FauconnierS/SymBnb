@@ -1,38 +1,44 @@
 {% extends 'base.html.twig' %}
 
-{% block title %} Profile {% endblock %}
+{% block title %}
+	Profile
+{% endblock %}
 
-{% block body %} 
-    <div class="container">
-        <h1 class="my-5"> Votre Profile </h1>
+{% block body %}
+	<div class="container">
+		<h1 class="my-5">
+			Votre Profile
+		</h1>
 
-        {{ form_start(form)}}
-        <div class="row">
-            <div class="col">
-                <div class="alert alert-light">
-                    <h2 class="alert-heading">Informations générales</h2>
-                    <hr>
-                    {{ form_row(form.firstName) }}
-                    {{ form_row(form.lastName) }}
-                    {{ form_row(form.email) }}
-                    {{ form_row(form.picture) }}
-                </div>
-            </div>
-            <div class="col">
-                
-                <div class="alert alert-light clearfix">
-                    <h2 class="alert-heading"> Détails</h2>
-                    <hr>
-                    {{ form_row(form.introduction) }}
-                    {{ form_row(form.description) }}
-                    <hr>
-                    <button type="submit" class="btn btn-danger float-right clearfix">
-                    <i class="fas fa-check"></i>
-                    Modifier
-                    </button>
-                </div>
-            </div>
-        </div>
-        {{ form_end(form)}}
-    </div>
+		{{ form_start(form)}}
+		<div class="row">
+			<div class="col">
+				<div class="alert alert-light">
+					<h2 class="alert-heading">Informations générales</h2>
+					<hr>
+					{{ form_row(form.firstName) }}
+					{{ form_row(form.lastName) }}
+					{{ form_row(form.email) }}
+
+					{{ form_row(form.avatarFile) }}
+				</div>
+			</div>
+			<div class="col">
+
+				<div class="alert alert-light clearfix">
+					<h2 class="alert-heading">
+						Détails</h2>
+					<hr>
+					{{ form_row(form.introduction) }}
+					{{ form_row(form.description) }}
+					<hr>
+					<button type="submit" class="btn btn-danger float-right clearfix">
+						<i class="fas fa-check"></i>
+						Modifier
+					</button>
+				</div>
+			</div>
+		</div>
+		{{ form_end(form)}}
+	</div>
 {% endblock %}
