@@ -8,11 +8,15 @@ use Cocur\Slugify\Slugify;
 use App\Repository\AdRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Component\HttpFoundation\File\File;
 use Doctrine\Common\Collections\ArrayCollection;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * @ORM\Entity(repositoryClass=AdRepository::class)
  * @ORM\HasLifecycleCallbacks()
+ * @Vich\Uploadable
  */
 class Ad
 {
@@ -48,10 +52,18 @@ class Ad
      */
     private $content;
 
+
     /**
-     * @ORM\Column(type="string", length=255)
+     *@Vich\UploadableField(mapping="cover_image", fileNameProperty="coverImageName")
+     * @var File|null
      */
-    private $coverImage;
+    private $coverImageFile;
+
+    /**
+     *@ORM\Column(type="string", nullable=true)
+     * @var string|null
+     */
+    private $coverImageName;
 
     /**
      * @ORM\Column(type="integer")
@@ -79,6 +91,12 @@ class Ad
      */
     private $comments;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $updatedAt;
+
+
     public function __construct()
     {
         $this->images = new ArrayCollection();
@@ -94,11 +112,11 @@ class Ad
      *
      * @return void
      */
-    public function initializeSlug() {
-        if(empty($this->slug)) {
+    public function initializeSlug()
+    {
+        if (empty($this->slug)) {
             $slugify = new Slugify();
-            $this ->slug = $slugify -> Slugify($this -> title);
-
+            $this->slug = $slugify->Slugify($this->title);
         }
     }
 
@@ -167,17 +185,39 @@ class Ad
         return $this;
     }
 
-    public function getCoverImage(): ?string
+    public function getCoverImageFile(): ?File
     {
-        return $this->coverImage;
+        return $this->coverImageFile;
     }
 
-    public function setCoverImage(string $coverImage): self
+    /**
+     * 
+     *
+     * @param File|UploadedFile|null $coverImageFile
+     * @return void
+     */
+    public function setCoverImageFile(?File $coverImageFile = null)
     {
-        $this->coverImage = $coverImage;
+        $this->coverImageFile = $coverImageFile;
 
-        return $this;
+        if (null !== $coverImageFile) {
+
+            $this->updatedAt = new \DateTimeImmutable();
+        }
     }
+
+
+    public function getCoverImageName(): ?string
+    {
+        return $this->coverImageName;
+    }
+
+    public function setCoverImageName(?string $coverImageName)
+    {
+        $this->coverImageName = $coverImageName;
+    }
+
+
 
     public function getRooms(): ?int
     {
@@ -267,26 +307,26 @@ class Ad
      *
      * @return array
      */
-    public function getNotAvailableDays(){
-        
+    public function getNotAvailableDays()
+    {
+
         $notAvailableDays = [];
 
-        foreach( $this -> bookings as $booking){
+        foreach ($this->bookings as $booking) {
 
             $result = range(
-                $booking -> getStartDate()->getTimeStamp(),
-                $booking -> getEndDate()->getTimeStamp(),
+                $booking->getStartDate()->getTimeStamp(),
+                $booking->getEndDate()->getTimeStamp(),
                 24 * 60 * 60
             );
 
-            $days = array_map(function($dayTimeStamp){
-                return new \DateTime(date('Y-m-d',$dayTimeStamp));
+            $days = array_map(function ($dayTimeStamp) {
+                return new \DateTime(date('Y-m-d', $dayTimeStamp));
             }, $result);
 
             $notAvailableDays = array_merge($notAvailableDays, $days);
         }
         return $notAvailableDays;
-          
     }
 
     /**
@@ -324,13 +364,14 @@ class Ad
      * @param User $author
      * @return void
      */
-    public function getCommentFromAuthor(User $author){
-        foreach($this -> comments as $comment){
-            if($comment -> getAuthor() === $author){
+    public function getCommentFromAuthor(User $author)
+    {
+        foreach ($this->comments as $comment) {
+            if ($comment->getAuthor() === $author) {
                 return $comment;
             }
         }
-        return null ;
+        return null;
     }
 
     /**
@@ -338,14 +379,26 @@ class Ad
      *
      * @return float
      */
-    public function getAvgRatings() {
-        $sum = array_reduce($this->comments->toArray(), function($total, $comment){
-            return $total + $comment -> getRating();
+    public function getAvgRatings()
+    {
+        $sum = array_reduce($this->comments->toArray(), function ($total, $comment) {
+            return $total + $comment->getRating();
         }, 0);
 
-        if(count($this->comments) > 0){
+        if (count($this->comments) > 0) {
             return $avg = $sum / count($this->comments);
         }
     }
+
+    public function getUpdatedAt(): ?\DateTimeInterface
+    {
+        return $this->updatedAt;
+    }
+
+    public function setUpdatedAt(?\DateTimeInterface $updatedAt): self
+    {
+        $this->updatedAt = $updatedAt;
+
+        return $this;
+    }
 }
-   

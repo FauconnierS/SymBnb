@@ -12,6 +12,19 @@
             "database": "symbnb",
             "username": "root",
             "password": ""
+        },
+        {
+            "mysqlOptions": {
+                "authProtocol": "default"
+            },
+            "previewLimit": 50,
+            "server": "yvu4xahse0smimsc.chr7pe7iynqr.eu-west-1.rds.amazonaws.com",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "Symbnb",
+            "database": "nnl6ji25inspush3",
+            "username": "keryygoutqtni948",
+            "password": "lor1kjz0xk6kpvrr"
         }
     ]
 }

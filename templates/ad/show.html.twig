@@ -6,7 +6,7 @@
 
 {% block body %}
 
-	<div class="ad-title" style="background-image: url( {{ ad.coverImage }})">
+	<div class="ad-title" style="background-image: url( ../images/cover-images/{{ ad.coverImageName }})">
 		<div class="container">
 			<h1>{{ ad.title }}</h1>
 			<p>{{ ad.introduction}}</p>
@@ -105,12 +105,14 @@
 				{% endif %}
 			</div>
 
-			<div class="col">
+			<div class="col-md-4">
 				{% set a = ad.author %}
 				<div class="row mb-3 align-item-center">
 					<div class="col-3">
 						<a href="{{ path('user_show', {'slug' : a.slug}) }}">
-							<img src="{{ a.avatarFile }}" class="avatar avatar-medium" alt="Avatar de {{ a.fullName }} ">
+							{% if ad.author.avatarName %}
+								<img src="{{vich_uploader_asset(ad.author)}}" class="avatar avatar-medium" alt="Avatar de {{ a.fullName }} ">
+							{% endif %}
 						</a>
 					</div>
 					<div class="col">

@@ -34,9 +34,9 @@ class AppFixtures extends Fixture
         $manager->persist($adminRole);
 
         $adminUser = new User();
-        $adminUser->setFirstName('Steeve')
-            ->setLastName('Fauconnier')
-            ->setEmail('fauconnier@symfony.com')
+        $adminUser->setFirstName('Test')
+            ->setLastName('Sym')
+            ->setEmail('test@sym.com')
             ->setHash($this->encoder->encodePassword($adminUser, 'pass'))
             ->setIntroduction("Salut c'est moi le créateur du site je vous souhaite la bienvenue!")
             ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(2)) . '</p>')
@@ -77,13 +77,12 @@ class AppFixtures extends Fixture
             $ad = new Ad();
 
             $title = $faker->sentence();
-            $coverImage = "https://picsum.photos/1000/350?random=" . $i;
+            //$coverImage = "https://picsum.photos/1000/350?random=" . $i;
             $introduction = $faker->paragraph(2);
             $content = '<p>' . join('</p><p>', $faker->paragraphs(5)) . '</p>';
             $userAd = $users[mt_rand(0, count($users) - 1)];
 
             $ad->setTitle($title)
-                ->setCoverImage($coverImage)
                 ->setIntroduction($introduction)
                 ->setContent($content)
                 ->setPrice(mt_rand(40, 200))
