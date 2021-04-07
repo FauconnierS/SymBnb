@@ -27,7 +27,7 @@ class StatsService
     public function getAverageAds($order)
     {
         return $this->manager->createQuery(
-            'SELECT AVG(c.rating) as note, a.title, a.id, u.firstName, u.lastName, u.picture
+            'SELECT AVG(c.rating) as note, a.title, a.id, u.firstName, u.lastName, u.avatarName
              FROM App\Entity\Comment c
              JOIN c.ad a
              JOIN a.author u

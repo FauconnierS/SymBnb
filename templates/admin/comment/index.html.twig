@@ -26,7 +26,9 @@
 						<td>{{ comment.id }}</td>
 						<td>{{ comment.createdAt | date('d/m/Y H:i') }}</td>
 						<td>
-							<img src="{{ comment.author.avatarFile }}" alt=" Avatar de {{ comment.author.fullName }}" class="avatar avatar-micro">
+							{% if comment.author.avatarName %}
+								<img src="{{vich_uploader_asset(comment.author)}}" alt="avatar de {{ comment.author.fullName }}" class="avatar avatar-micro mr-2">
+							{% endif %}
 							{{comment.author.fullName}}
 						</td>
 						<td>{{ comment.content }}</td>

@@ -451,7 +451,10 @@ class User implements UserInterface, \Serializable
             $this->email,
             $this->hash,
             $this->firstName,
-            $this->lastName
+            $this->lastName,
+            $this->userRoles,
+            $this->description,
+            $this->slug,
         ));
     }
 
@@ -464,6 +467,9 @@ class User implements UserInterface, \Serializable
             $this->hash,
             $this->firstName,
             $this->lastName,
+            $this->userRoles,
+            $this->description,
+            $this->slug,
         ) = unserialize($serialized);
     }
 }

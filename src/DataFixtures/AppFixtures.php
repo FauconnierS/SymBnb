@@ -37,7 +37,7 @@ class AppFixtures extends Fixture
         $adminUser->setFirstName('Steeve')
             ->setLastName('Fauconnier')
             ->setEmail('fauconnier@symfony.com')
-            ->setHash($this->encoder->encodePassword($adminUser, 'Motdepasse'))
+            ->setHash($this->encoder->encodePassword($adminUser, 'pass'))
             ->setIntroduction("Salut c'est moi le créateur du site je vous souhaite la bienvenue!")
             ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(2)) . '</p>')
             ->addUserRole($adminRole);

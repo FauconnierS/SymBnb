@@ -24,7 +24,9 @@
 						<td>{{ ad.id }}</td>
 						<td>{{ ad.title }}</td>
 						<td>
-							<img src="{{ ad.author.avatarFile }}" alt="avatar de {{ ad.author.fullName }}" class="avatar avatar-micro mr-2">
+							{% if ad.author.avatarName %}
+								<img src="{{vich_uploader_asset(ad.author)}}" alt="avatar de {{ ad.author.fullName }}" class="avatar avatar-micro mr-2">
+							{% endif %}
 							{{ ad.author.fullName }}
 						</td>
 						<td class="text-center">

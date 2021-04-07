@@ -20,11 +20,14 @@
 			</thead>
 			<tbody>
 				{% for booking in pagination.data %}
+
 					<tr>
 						<td>{{ booking.id }}</td>
 						<td>{{ booking.startDate | date('d/m/Y H:i') }}</td>
 						<td>
-							<img src="{{ booking.booker.avatarFile }}" alt="Avatar de {{ booking.booker.fullname}}" class="avatar avatar-micro">
+							{% if booking.booker.avatarName %}
+								<img src="{{vich_uploader_asset(booking.booker)}}" alt="avatar de {{ booking.booker.fullName }}" class="avatar avatar-micro mr-2">
+							{% endif %}
 							{{ booking.booker.fullName }}
 						</td>
 						<td>{{ booking.ad.title }}</td>
